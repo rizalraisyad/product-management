@@ -41,6 +41,9 @@ export class Product {
   @Column({ type: 'int' })
   price: number;
 
+  @Column({ type: 'boolean', default: false })
+  isDeleted: boolean;
+
   @ManyToOne(() => Category, (category) => category.products, { eager: true })
   @JoinColumn({ name: 'category_id' })
   category: Category;

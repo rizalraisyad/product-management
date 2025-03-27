@@ -16,6 +16,9 @@ export class Category {
   @Column()
   name: string;
 
+  @Column({ type: 'boolean', default: false })
+  isDeleted: boolean;
+
   @OneToMany(() => Product, (product) => product.category)
   products: Product[];
 
