@@ -1,0 +1,35 @@
+version: '3.9'
+
+services:
+  app:
+    container_name: klontong-backend
+    build: .
+    ports:
+      - '3000:3000'
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      DB_NAME: klontong
+      DB_SSL: 'false'
+      DB_SYNCHRONIZE: 'true'
+      DB_LOGGING: 'true'
+    depends_on:
+      - db
+
+  db:
+    container_name: klontong-db
+    image: postgres:14
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: klontong
+    ports:
+      - '5432:5432'
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
