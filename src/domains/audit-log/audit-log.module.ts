@@ -1,4 +1,3 @@
-// src/domains/audit-log/audit-log.module.ts
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuditLog } from './audit-log.entity';

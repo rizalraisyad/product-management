@@ -1,4 +1,5 @@
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
+import { DataSourceOptions } from 'typeorm';
 import { PostgresConnectionOptions } from 'typeorm/driver/postgres/PostgresConnectionOptions';
 
 interface partialDbConfig {
@@ -51,5 +52,34 @@ export function dbConfig(): TypeOrmModuleOptions {
     migrationsRun: process.env.DB_MIGRATION_RUN?.toLowerCase() === 'true',
     entities: [__dirname + '/../domains/**/*.entity{.ts,.js}'],
     migrations: [__dirname + '/../db/migrations/*{.ts,.js}'],
+  };
+}
+
+export function dataSourceConfig(): DataSourceOptions {
+  const sslEnabled = process.env.DB_SSL?.toLowerCase() === 'true';
+
+  const dbType: PostgresConnectionOptions['type'] = 'postgres';
+
+  const connection = process.env.DATABASE_URL
+    ? {
+        url: process.env.DATABASE_URL,
+        ssl: sslEnabled ? { rejectUnauthorized: false } : false,
+      }
+    : {
+        host: process.env.DB_HOST || 'localhost',
+        port: Number(process.env.DB_PORT) || 5432,
+        username: process.env.DB_USER || 'dbtesting',
+        password: process.env.DB_PASSWORD || 'dbtesting',
+        database: process.env.DB_NAME || 'klontong',
+        ssl: sslEnabled ? { rejectUnauthorized: false } : false,
+      };
+
+  return {
+    type: dbType,
+    ...connection,
+    logging: process.env.DB_LOGGING === 'true',
+    synchronize: false,
+    migrations: ['src/db/migrations/**/*{.ts,.js}'],
+    entities: ['src/domains/**/*.entity{.ts,.js}'],
   };
 }
